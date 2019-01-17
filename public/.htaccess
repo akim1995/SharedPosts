@@ -1,0 +1,18 @@
+# sudo a2enmod rewrite wtf mod rewrite is not enabled be default.
+<IfModule mod_rewrite.c>
+  Options -Multiviews
+  RewriteEngine On
+# no need to write rewrite base bacause we are in public folder
+# RewriteBase /public
+# if file (f) or directory (d) not found to apply
+#rewrite rule
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+# QSA flag. if rewrite rule replacement uri
+# constains query string by default it's going to replace
+# original uri query string. but with this flag query string is going to be combined
+
+# The [L] flag causes mod_rewrite to stop processing the rule set. In most contexts, this means that
+# if the rule matches, no further rules will be processed. I suppose there is no need for this flag.
+  RewriteRule  ^(.+)$ index.php?url=$1 [QSA,L]
+</IfModule>

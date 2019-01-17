@@ -1,0 +1,2 @@
+#Don't show files and folders if there is not index file
+Options -Indexes 
