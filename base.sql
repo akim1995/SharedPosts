@@ -16,3 +16,15 @@ CREATE TABLE posts (
 	body TEXT,
 	created_at DATETIME DEFAULT NOW()
 );
+
+INSERT INTO users (
+	name,
+	email,
+	password
+	)
+	VALUES (
+	'John Doe',
+	'johndoe@gmail.com',
+	'123456'
+	);
+

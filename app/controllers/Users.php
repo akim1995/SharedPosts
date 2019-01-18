@@ -1,7 +1,7 @@
 <?php
 	class Users extends Controller {
 		public function __construct() {
-
+			$this->userModel = $this->model('User');
 		}
 		public function index() {
 			$this->register();
@@ -25,6 +25,11 @@
 				// Validate Email 
 				if(empty($data['email'])) {
 					$data['email_err'] = 'Please enter email';
+				} else {
+					// Check email
+					if($this->userModel->findUserByEmail($data['email'])) {
+					$data['email_err'] = 'Email is already in use.';
+					}
 				}
 				// Validate name 
 				if(empty($data['name'])) {
@@ -45,10 +50,17 @@
 						$data['confirm_password_err'] = 'Passwords do not match';
 					}
 				}
+				// Make sure errors are empty
 				if(empty($data['email_err']) && empty($data['name_error']) && 
 				empty($data['password_err']) && empty($data['confirm_password_err'])
 				) {
-					die('SUCCESS');
+					$data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+					// Register User
+					if($this->userModel->register($data)) {
+						redirect('users/login');
+					} else {
+						die('Somethin went Wrong');
+					}
 				} else {
 					// Load view with errors
 					$this->view('users/register', $data);
@@ -78,6 +90,31 @@
 				// Process form
 				// remove html tags
 				$_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+				$data = [
+						'title' => 'login',
+						'email' => trim($_POST['email']),
+						'password' => trim($_POST['password']),
+						'email_err' => '',
+						'password_err' => '',
+				];
+
+				// Validate Email 
+				if(empty($data['email'])) {
+					$data['email_err'] = 'Please enter email';
+				}
+				// Validate Password 
+				if(empty($data['password'])) {
+					$data['password_err'] = 'password';
+				}
+				
+				// Make sure errors are empty
+				if(empty($data['email_err']) && empty($data['password_err'])) {
+					die('SUCCESS');
+				} else {
+					// Load view with errors
+					$this->view('users/login', $data);
+				}
+
 			} else {
 				// Init data
 				$data = [
